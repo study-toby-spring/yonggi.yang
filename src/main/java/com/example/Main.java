@@ -1,5 +1,7 @@
 package com.example;
 
+import com.example.dao.DUserDao;
+import com.example.dao.NUserDao;
 import com.example.dao.UserDao;
 import com.example.domain.User;
 
@@ -7,7 +9,8 @@ import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        UserDao dao = new UserDao();
+        UserDao dao = new NUserDao();
+        UserDao dao2 = new DUserDao();
 
         User user = new User();
         user.setId("1");
@@ -18,7 +21,7 @@ public class Main {
 
         System.out.println(user.getId() + "등록 성공");
 
-        User user2 = dao.get(user.getId());
+        User user2 = dao2.get(user.getId());
         System.out.println(user2.getName());
         System.out.println(user2.getPassword());
 
