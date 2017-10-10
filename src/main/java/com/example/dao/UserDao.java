@@ -38,7 +38,6 @@ public class UserDao {
         ps.setString(1, id);
 
         ResultSet rs = ps.executeQuery();
-        rs.next();
 
         User user = null;
         if (rs.next()){
