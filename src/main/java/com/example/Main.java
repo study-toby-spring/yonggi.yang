@@ -1,7 +1,7 @@
 package com.example;
 
-import com.example.dao.DUserDao;
-import com.example.dao.NUserDao;
+import com.example.dao.ConnectionMaker;
+import com.example.dao.DConnectionMaker;
 import com.example.dao.UserDao;
 import com.example.domain.User;
 
@@ -9,21 +9,11 @@ import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        UserDao dao = new NUserDao();
-        UserDao dao2 = new DUserDao();
-
-        User user = new User();
-        user.setId("1");
-        user.setName("양용기");
-        user.setPassword("123123");
-
-        dao.add(user);
-
-        System.out.println(user.getId() + "등록 성공");
-
-        User user2 = dao2.get(user.getId());
-        System.out.println(user2.getName());
-        System.out.println(user2.getPassword());
+        ConnectionMaker connectionMaker = new DConnectionMaker();
+        UserDao dao = new UserDao(connectionMaker);
+        User user = dao.get("1");
+        System.out.println(user.getName());
+        System.out.println(user.getPassword());
 
         System.out.println(user.getId() + "조회 성공");
 
