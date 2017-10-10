@@ -1,9 +1,6 @@
 package com.example;
 
-import com.example.dao.ConnectionMaker;
-import com.example.dao.DConnectionMaker;
-import com.example.dao.DaoFactory;
-import com.example.dao.UserDao;
+import com.example.dao.*;
 import com.example.domain.User;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -12,19 +9,21 @@ import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        DaoFactory factory = new DaoFactory();
-        UserDao dao1 = factory.userDao();
-        UserDao dao2 = factory.userDao();
 
-        System.out.println(dao1);
-        System.out.println(dao2);
+        ApplicationContext context = new AnnotationConfigApplicationContext(CountingDaoFactory.class);
+        UserDao dao = context.getBean("userDao", UserDao.class);
 
-        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-        UserDao dao3 = context.getBean("userDao", UserDao.class);
-        UserDao dao4 = context.getBean("userDao", UserDao.class);
 
-        System.out.println(dao3);
-        System.out.println(dao4);
+        User user = dao.get("1");
+        user = dao.get("1");
+        user = dao.get("1");
+        System.out.println(user.getName());
+        System.out.println(user.getPassword());
+        System.out.println(user.getId() + "조회 성공");
+
+        CountingConnectionMaker ccm = context.getBean("connectionMaker", CountingConnectionMaker.class);
+
+        System.out.println("Connection counter : " + ccm.getCounter());
 
 
     }
