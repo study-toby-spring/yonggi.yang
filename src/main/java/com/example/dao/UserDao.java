@@ -17,18 +17,17 @@ public class UserDao {
     public UserDao() {
     }
 
-    public void add(User user) throws ClassNotFoundException, SQLException {
+    public void add(final User user) throws ClassNotFoundException, SQLException {
 
-        Connection c = dataSource.getConnection();
-        PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?,?,?)");
-        ps.setString(1, user.getId());
-        ps.setString(2, user.getName());
-        ps.setString(3, user.getPassword());
-
-        ps.executeUpdate();
-
-        ps.close();
-        c.close();
+        jdbcContextWithStatementStrategy(new StatementStrategy() {
+            public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+                PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?,?,?)");
+                ps.setString(1, user.getId());
+                ps.setString(2, user.getName());
+                ps.setString(3, user.getPassword());
+                return ps;
+            }
+        });
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
@@ -40,7 +39,7 @@ public class UserDao {
         ResultSet rs = ps.executeQuery();
 
         User user = null;
-        if (rs.next()){
+        if (rs.next()) {
             user = new User();
             user.setId(rs.getString("id"));
             user.setName(rs.getString("name"));
@@ -56,8 +55,11 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
-        StatementStrategy strategy = new DeleteAllStatement();
-        jdbcContextWithStatementStrategy(strategy);
+        jdbcContextWithStatementStrategy(new StatementStrategy() {
+            public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+                return c.prepareStatement("delete from users");
+            }
+        });
     }
 
     public int getCount() throws SQLException {
@@ -73,27 +75,27 @@ public class UserDao {
         } catch (SQLException e) {
             throw e;
         } finally {
-            if (rs != null){
-                try{
+            if (rs != null) {
+                try {
                     rs.close();
 
-                } catch(SQLException e){
+                } catch (SQLException e) {
 
                 }
             }
-            if (ps != null){
-                try{
+            if (ps != null) {
+                try {
                     ps.close();
 
-                } catch(SQLException e){
+                } catch (SQLException e) {
 
                 }
             }
-            if (c != null){
-                try{
+            if (c != null) {
+                try {
                     c.close();
 
-                } catch(SQLException e){
+                } catch (SQLException e) {
 
                 }
             }
@@ -111,19 +113,19 @@ public class UserDao {
         } catch (SQLException e) {
             throw e;
         } finally {
-            if (ps != null){
-                try{
+            if (ps != null) {
+                try {
                     ps.close();
 
-                } catch(SQLException e){
+                } catch (SQLException e) {
 
                 }
             }
-            if (c != null){
-                try{
+            if (c != null) {
+                try {
                     c.close();
 
-                } catch(SQLException e){
+                } catch (SQLException e) {
 
                 }
             }
