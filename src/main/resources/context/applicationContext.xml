@@ -16,10 +16,17 @@
 
     <bean id="mailSender" class="com.example.service.DummyMailSender" />
 
-    <bean id="userService" class="com.example.service.UserService">
-        <property name="userDao" ref="userDao"/>
+    <bean id="userService" class="com.example.service.UserServiceTx">
         <property name="transactionManager" ref="transactionManager"/>
+        <property name="userService" ref="userServiceImpl"/>
     </bean>
+
+
+    <bean id="userServiceImpl" class="com.example.service.UserServiceImpl">
+        <property name="userDao" ref="userDao"/>
+        <property name="mailSender" ref="mailSender"/>
+    </bean>
+
 
     <bean id="userDao" class="com.example.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
